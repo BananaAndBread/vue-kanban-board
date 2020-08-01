@@ -1,0 +1,46 @@
+<template>
+    <div class="column">
+        <div class="column__head" :style="{'background-color': headColor }">
+            <slot name="head"/>
+        </div>
+        <div class="column__body">
+            <slot name="tasks"/>
+            <slot></slot>
+        </div>
+    </div>
+</template>
+
+<script>
+    export default {
+        props: {
+            headColor: {
+                default: "orange",
+                type: String
+            }
+        },
+        data () {
+            return {
+                name: "on-hold"
+            }
+        }
+    }
+</script>
+
+<style>
+    .column{
+        display: flex;
+        flex-direction: column;
+    }
+    .column__head{
+        color: white;
+        text-transform: uppercase;
+        padding: 0.5em;
+    }
+    .column__body{
+        background: #474747;
+        padding: 1em;
+    }
+    .column__body__button{
+    }
+
+</style>
