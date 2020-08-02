@@ -11,22 +11,22 @@
 </template>
 
 <script>
-    export default {
-        props: {
-            headColor: {
-                default: "orange",
-                type: String
-            }
-        },
-        data () {
-            return {
-                name: "on-hold"
-            }
-        }
+export default {
+  props: {
+    headColor: {
+      default: 'orange',
+      type: String
     }
+  },
+  data () {
+    return {
+      name: 'on-hold'
+    }
+  }
+}
 </script>
 
-<style>
+<style scoped>
     .column{
         display: flex;
         flex-direction: column;

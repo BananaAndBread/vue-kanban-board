@@ -16,36 +16,45 @@
 </template>
 
 <script>
-    import PlusIcon from '@/assets/icons/icons8-plus.svg'
-    export default {
-        components: {
-            PlusIcon
-        },
-        data () {
-            return {
-                open: false,
-                text: ''
-            }
-        },
-        methods: {
-            openForm() {
-                this.open = true
-            },
-            closeForm() {
-                this.open = false
-            },
-            addCard() {
-                this.$emit("addCard", this.text)
-            }
-        }
+import PlusIcon from '@/assets/icons/icons8-plus.svg'
+
+export default {
+  components: {
+    PlusIcon
+  },
+  data () {
+    return {
+      open: false,
+      text: ''
     }
+  },
+  methods: {
+    openForm () {
+      this.open = true
+    },
+    closeForm () {
+      this.open = false
+      this.reset()
+    },
+    addCard () {
+      this.$emit('addCard', this.text)
+      this.reset()
+    },
+    reset () {
+      this.text = ''
+    }
+  },
+  mounted () {
+  }
+}
 
 </script>
 
-<style>
-    .add-card-form{
+<style scoped>
+    .add-card-form {
     }
-    .add-card-form__icon-plus{
+
+    .add-card-form__icon-plus {
         fill: #d3d3d3;
         background-size: 1em auto;
         width: 1.5em;
@@ -53,7 +62,7 @@
         margin-right: 1em;
     }
 
-    .add-card-form__icon-cross{
+    .add-card-form__icon-cross {
         fill: #d3d3d3;
         background-size: 1em auto;
         width: 1.5em;
@@ -63,16 +72,17 @@
         margin-left: 0.5em;
     }
 
-    .add-card-form_opened{
+    .add-card-form_opened {
     }
-    .add-card-form_closed{
+
+    .add-card-form_closed {
         display: flex;
         color: #d3d3d3;
         align-items: center;
         padding: 0.5em;
     }
 
-    .add-card-form__textarea{
+    .add-card-form__textarea {
         background: gray;
         display: block;
         color: #d3d3d3;;
@@ -81,7 +91,7 @@
         width: 100%;
     }
 
-    .add-card-form__button{
+    .add-card-form__button {
         margin-top: 0.5em;
         background: gray;
         color: #d3d3d3;
@@ -90,6 +100,7 @@
         padding: 0.3em 1em;
 
     }
+
     textarea::-webkit-input-placeholder {
         color: #a6a6a6;
     }
@@ -98,7 +109,7 @@
         color: #a6a6a6;
     }
 
-    textarea::-moz-placeholder {  /* Firefox 19+ */
+    textarea::-moz-placeholder { /* Firefox 19+ */
         color: #a6a6a6;
     }
 

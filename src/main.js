@@ -6,13 +6,15 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import store from './store'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
-Vue.use(VueAxios, axios);
-// Vue.axios.defaults.headers.common["Authorisation"] = '';
-Vue.config.productionTip = false;
-Vue.use(BootstrapVue);
-Vue.use(IconsPlugin);
+import VModal from 'vue-js-modal'
+
+Vue.use(VueAxios, axios)
+Vue.config.productionTip = false
+Vue.use(BootstrapVue)
+Vue.use(IconsPlugin)
+Vue.use(VModal)
 
 new Vue({
   store,
-  render: h => h(App),
-}).$mount('#app');
+  render: h => h(App)
+}).$mount('#app')
