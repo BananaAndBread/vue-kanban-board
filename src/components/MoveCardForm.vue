@@ -2,12 +2,12 @@
     <div class="move-card-form">
         <h4>MOVE TO:</h4>
         <p class="move-card-form__label"> Board:</p>
-        <select v-model="selectedColumnName" class="move-card-form__select">
+        <select @change='saveState' v-model="selectedColumnName" class="move-card-form__select">
             <option :key="column.name" v-for="column in columns"> {{column.name}}</option>
         </select>
         <div v-if='selectedColumnName'>
             <p class="move-card-form__label"> Position:</p>
-            <select v-model="selectedPlace" class="move-card-form__select">
+            <select @change='saveState' v-model="selectedPlace" class="move-card-form__select">
                 <option :key="placeNumber" v-for="placeNumber in findNumberOfCardsIn(selectedColumnName)">
                     {{placeNumber}}
                 </option>
@@ -24,7 +24,7 @@ export default {
   data () {
     return {
       prevColumnIndex: '',
-      prevSeqNum: '',
+      prevCardIndex: '',
       selectedColumnName: '',
       selectedPlace: '1'
     }
@@ -34,11 +34,18 @@ export default {
   },
   computed: mapState({ columns: state => state.cards.columns }),
   mounted () {
-    const indices = this.findCurrentColumnAndSeqNum()
-    this.prevColumnIndex = indices.columnIndex
-    this.prevCardIndex = indices.cardIndex
-    this.selectedColumnName = this.columns[indices.columnIndex].name
-    this.selectedPlace = indices.cardIndex + 1
+    if (!this.cardId) {
+      this.prevColumnIndex = this.$store.state.persistent.moveCardFormState.prevColumnIndex
+      this.prevCardIndex = this.$store.state.persistent.moveCardFormState.prevCardIndex
+      this.selectedColumnName = this.$store.state.persistent.moveCardFormState.selectedColumnName
+      this.selectedPlace = this.$store.state.persistent.moveCardFormState.selectedPlace
+    } else {
+      const indices = this.findCurrentColumnAndSeqNum()
+      this.prevColumnIndex = indices.columnIndex
+      this.prevCardIndex = indices.cardIndex
+      this.selectedColumnName = this.columns[indices.columnIndex].name
+      this.selectedPlace = indices.cardIndex + 1
+    }
   },
   methods: {
     findColumnIndexByColumnName (columnName) {
@@ -77,7 +84,6 @@ export default {
       }
       this.$store.commit('cards/moveCard', payload)
       const promises = []
-      console.log('indices' + this.prevColumnIndex + ' ' + newColumnIndex)
       promises.push(
         this.$store.dispatch(
           'cards/updateColumn', { columnId: this.prevColumnIndex }))
@@ -90,7 +96,7 @@ export default {
     saveState () {
       const payload = {
         prevColumnIndex: this.prevColumnIndex,
-        prevSeqNum: this.prevSeqNum,
+        prevCardIndex: this.prevCardIndex,
         selectedColumnName: this.selectedColumnName,
         selectedPlace: this.selectedPlace
       }

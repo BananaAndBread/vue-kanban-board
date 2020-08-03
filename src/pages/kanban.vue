@@ -1,6 +1,6 @@
 <template>
-  <div id="secure">
-    <Kanban></Kanban>
+  <div class="kanban-page">
+    <Kanban class="kanban"></Kanban>
   </div>
 </template>
 
@@ -9,24 +9,24 @@ import Kanban from '../components/Kanban'
 
 export default {
   name: 'KanbanPage',
-  data () {
-    return {}
-  },
   components: {
     Kanban
   },
   beforeRouteEnter (to, from, next) {
     if (!localStorage.token) {
       next({ name: 'login' })
-    } else next()
-  },
-  mounted () {
+    } else {
+      next()
+    }
   }
 }
 </script>
 
 <style scoped>
-  #secure {
-    margin-top: 10px;
+  .kanban-page {
+    background: rgb(56,58,66) !important;
+  }
+  .kanban {
+    background: rgb(56,58,66);
   }
 </style>

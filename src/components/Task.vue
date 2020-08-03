@@ -22,22 +22,17 @@ export default {
     },
     text: String
   },
-  data () {
-    return {}
-  },
   methods: {
     removeCard () {
       this.$emit('removeCard')
     }
-  },
-  mounted () {
   }
 }
 </script>
 
 <style scoped>
     .task {
-        background: black;
+        background: #1f1f23;
         color: #c6c6c6;
         padding: 1em;
     }

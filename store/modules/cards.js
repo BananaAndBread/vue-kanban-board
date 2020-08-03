@@ -1,63 +1,40 @@
 import Vue from 'vue'
-
+function makeColumns () {
+  return [
+    {
+      id: '0',
+      name: 'on hold',
+      cards: [],
+      color: '#f68a49'
+    },
+    {
+      id: '1',
+      name: 'in progress',
+      cards: [],
+      color: '#3c8abd'
+    },
+    {
+      id: '2',
+      name: 'needs review',
+      cards: [],
+      color: 'pink'
+    },
+    {
+      id: '3',
+      name: 'approved',
+      cards: [],
+      color: '#49a066'
+    }
+  ]
+}
 export default {
   namespaced: true,
   state: {
-    columns: [
-      {
-        id: '0',
-        name: 'on hold',
-        cards: [],
-        color: 'orange'
-      },
-      {
-        id: '1',
-        name: 'in progress',
-        cards: [],
-        color: 'blue'
-      },
-      {
-        id: '2',
-        name: 'needs review',
-        cards: [],
-        color: 'pink'
-      },
-      {
-        id: '3',
-        name: 'approved',
-        cards: [],
-        color: 'green'
-      }
-    ]
+    columns: makeColumns()
   },
   mutations: {
     setCards (state, cards) {
-      state.columns = [
-        {
-          id: '0',
-          name: 'on hold',
-          cards: [],
-          color: 'orange'
-        },
-        {
-          id: '1',
-          name: 'in progress',
-          cards: [],
-          color: 'blue'
-        },
-        {
-          id: '2',
-          name: 'needs review',
-          cards: [],
-          color: 'pink'
-        },
-        {
-          id: '3',
-          name: 'approved',
-          cards: [],
-          color: 'green'
-        }
-      ]
+      state.columns = makeColumns()
       for (const card of cards) {
         const indexCol = card.row
         const column = state.columns[indexCol]

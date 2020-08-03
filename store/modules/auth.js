@@ -9,7 +9,7 @@ const actions = {
         const data = {
           token: localStorage.token
         }
-        const response = await Vue.axios.post('/users/refresh_token/', data).catch()
+        const response = await Vue.axios.post('/users/refresh_token/', data)
         localStorage.token = response.data.token
         Vue.axios.defaults.headers.common.Authorization = 'JWT ' + localStorage.token
       } else {
@@ -34,17 +34,13 @@ const actions = {
     }
   },
   logout () {
-    Vue.axios.defaults.headers.common.Authorization = 'JWT ' + localStorage.token
     localStorage.token = ''
   }
 }
 
 const getters = {
   authenticated () {
-    if (localStorage.token) {
-      return true
-    }
-    return false
+    return !!localStorage.token
   },
   token () {
     return localStorage.token

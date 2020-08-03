@@ -1,22 +1,14 @@
 <template>
   <div id="app">
-    <nav>
-      <div>
-        <b-navbar type="dark" variant="dark">
-          <b-navbar-nav>
-            <b-navbar-brand>Kanban</b-navbar-brand>
-            <b-nav-item v-if="getToken()" to="/login" v-on:click="logout()" replace>Logout</b-nav-item>
-        </b-navbar-nav>
-        </b-navbar>
-      </div>
-      <Error v-if="$store.state.error.error"/>
-    </nav>
+    <NavBar/>
+    <Error v-if="$store.state.error.error"/>
     <router-view />
   </div>
 </template>
 
 <script>
 import Error from './components/Error'
+import NavBar from './components/NavBar'
 export default {
   name: 'App',
   data () {
@@ -31,27 +23,17 @@ export default {
     }
   },
   methods: {
-    logout () {
-      this.$store.dispatch('auth/logout')
-      this.$router.replace({ name: 'login' })
-    },
-    getToken () {
-      return localStorage.token
-    }
   },
   components: {
-    Error
+    Error,
+    NavBar
   }
 }
 </script>
 
-<style>
+<style scoped>
   body {
     background-color: #F0F0F0;
-  }
-  h1 {
-    padding: 0;
-    margin-top: 0;
   }
   #app {
     margin: auto;

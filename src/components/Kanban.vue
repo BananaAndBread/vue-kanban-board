@@ -1,35 +1,36 @@
 <template>
-    <div>
-        <vue-horizontal-list :items="columns" class="kanban">
-            <template v-slot:default="{item}">
-                <Column :headColor="item.color">
-                    <template v-slot:head>
-                        {{item.name}} ({{item.cards.length}})
-                    </template>
-                    <template v-slot:tasks>
-                        <div class="kanban__tasks kanban__tasks--big">
-                        <draggable :list="item.cards" group="tasks" @move='check(item)'
-                                   @change="updateColumn($event, item)">
-                            <Task @click.native="showModal(card.id)" @removeCard='removeCard(item.id, card.id)'
-                                  :id="card.id" :key="card.id" :text="card.text" v-for="card in item.cards"
-                                  class="kanban__task"></Task>
-                        </draggable>
-                        </div>
-                        <div class="kanban__tasks kanban__tasks--small">
-                            <Task @click.native="showModal(card.id)" @removeCard='removeCard(item.id, card.id)'
-                                  :id="card.id" :key="card.id" :text="card.text" v-for="card in item.cards"
-                                  class="kanban__task"></Task>
-                        </div>
-                        <AddCardForm :value='newCardsText[item.id].text' :is-open="newCardsText[item.id].isOpen" @saveState='saveInputs($event, item.id)' @addCard='addCard($event, item.id)'></AddCardForm>
-                    </template>
+  <div>
+    <vue-horizontal-list :items="columns" class="kanban">
+      <template v-slot:default="{item}">
+        <Column :headColor="item.color">
+          <template v-slot:head>
+            {{item.name}} ({{item.cards.length}})
+          </template>
+          <template v-slot:tasks>
+            <div class="kanban__tasks kanban__tasks--big">
+              <draggable :list="item.cards" group="tasks" @move='check(item)'
+                         @change="updateColumn($event, item)">
+                <Task @click.native="showModal(card.id)" @removeCard='removeCard(item.id, card.id)'
+                      :id="card.id" :key="card.id" :text="card.text" v-for="card in item.cards"
+                      class="kanban__task"></Task>
+              </draggable>
+            </div>
+            <div class="kanban__tasks kanban__tasks--small">
+              <Task @click.native="showModal(card.id)" @removeCard='removeCard(item.id, card.id)'
+                    :id="card.id" :key="card.id" :text="card.text" v-for="card in item.cards"
+                    class="kanban__task"></Task>
+            </div>
+            <AddCardForm class="kanban__add-card-form" :value='newCardsText[item.id].text' :is-open="newCardsText[item.id].isOpen"
+                         @saveState='saveInputs($event, item.id)' @addCard='addCard($event, item.id)'></AddCardForm>
+          </template>
 
-                </Column>
-            </template>
-        </vue-horizontal-list>
-        <modal class="kanban__modal" :name="'modal'" :adaptive='true'>
-            <MoveCardForm @close='closeModal' :card-id="cardToMoveId"></MoveCardForm>
-        </modal>
-    </div>
+        </Column>
+      </template>
+    </vue-horizontal-list>
+    <modal @before-close='saveModalState(false)' class="kanban__modal" :name="'modal'" :adaptive='true'>
+      <MoveCardForm @close='closeModal' :card-id="cardToMoveId"></MoveCardForm>
+    </modal>
+  </div>
 </template>
 
 <script>
@@ -69,8 +70,10 @@ export default {
     }
   },
   async mounted () {
-    store.dispatch('cards/getCards')
-    store.dispatch('cards/getCards')
+    if (this.$store.state.persistent.modalState.isOpen) {
+      this.showModal()
+    }
+    await store.dispatch('cards/getCards')
   },
   methods: {
     addCard () {
@@ -89,16 +92,20 @@ export default {
     showModal (cardId) {
       this.cardToMoveId = cardId
       this.$modal.show('modal')
-      this.$store.commit('persistent/')
+      this.saveModalState(true)
     },
     closeModal () {
       this.$modal.hide('modal')
+      this.saveModalState(false)
+    },
+    saveModalState (isOpen) {
+      this.$store.commit('persistent/setModalState', isOpen)
     },
     saveInputs () {
       const text = arguments[0].text
       const isOpen = arguments[0].isOpen
-      const columnINdex = arguments[1]
-      this.$store.commit('persistent/setNewCardText', { index: columnINdex, text, isOpen })
+      const columnIndex = arguments[1]
+      this.$store.commit('persistent/setNewCardText', { index: columnIndex, text, isOpen })
     }
 
   },
@@ -110,32 +117,34 @@ export default {
 </script>
 
 <style scoped>
-    .kanban {
+  .kanban {
 
-        overflow: hidden;
-    }
+    overflow: hidden;
+  }
 
-    .kanban__task {
-        width: 95%;
-        margin-left: 0.25em;
-        margin-top: 1em;
-        margin-bottom: 1em;
-    }
+  .kanban__task {
+    width: 95%;
+    margin: 1em auto;
+  }
+  .kanban__add-card-form{
+    width: 95%;
+    margin: 1em auto;
+  }
 
-    .kanban__modal {
-        z-index: 2;
-    }
+  .kanban__modal {
+    z-index: 2;
+  }
 
-    @media (max-width: 576px) {
-        .kanban__tasks--big{
-            display: none;
-        }
+  @media (max-width: 576px) {
+    .kanban__tasks--big {
+      display: none;
     }
+  }
 
-    @media (min-width: 576px) {
-        .kanban__tasks--small{
-            display: none;
-        }
+  @media (min-width: 576px) {
+    .kanban__tasks--small {
+      display: none;
     }
+  }
 
 </style>

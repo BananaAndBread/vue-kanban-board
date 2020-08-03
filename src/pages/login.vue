@@ -1,8 +1,8 @@
 <template>
   <div class="login">
     <h1>Login</h1>
-    <input type="text" name="username" v-model="input.username" placeholder="Username" />
-    <input type="password" name="password" v-model="input.password" placeholder="Password" />
+    <input class="login__input" type="text" name="username" v-model="input.username" placeholder="Username" />
+    <input class="login__input" type="password" name="password" v-model="input.password" placeholder="Password" />
     <button type="button" v-on:click="login()">Login</button>
   </div>
 </template>
@@ -17,8 +17,6 @@ export default {
         password: ''
       }
     }
-  },
-  mounted () {
   },
   methods: {
     async login () {
@@ -55,6 +53,9 @@ export default {
     .login{
       width: 100%;
     }
+  }
+  .login__input{
+    border: solid 1px rgba(128, 128, 128, 0.57);
   }
 
 </style>
