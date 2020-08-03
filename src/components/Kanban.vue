@@ -6,15 +6,23 @@
                     <template v-slot:head>
                         {{item.name}} ({{item.cards.length}})
                     </template>
-                    <template class="kanban__tasks" v-slot:tasks>
+                    <template v-slot:tasks>
+                        <div class="kanban__tasks kanban__tasks--big">
                         <draggable :list="item.cards" group="tasks" @move='check(item)'
                                    @change="updateColumn($event, item)">
                             <Task @click.native="showModal(card.id)" @removeCard='removeCard(item.id, card.id)'
                                   :id="card.id" :key="card.id" :text="card.text" v-for="card in item.cards"
                                   class="kanban__task"></Task>
                         </draggable>
-                        <AddCardForm @addCard='addCard($event, item.id)'></AddCardForm>
+                        </div>
+                        <div class="kanban__tasks kanban__tasks--small">
+                            <Task @click.native="showModal(card.id)" @removeCard='removeCard(item.id, card.id)'
+                                  :id="card.id" :key="card.id" :text="card.text" v-for="card in item.cards"
+                                  class="kanban__task"></Task>
+                        </div>
+                        <AddCardForm :value='newCardsText[item.id].text' :is-open="newCardsText[item.id].isOpen" @saveState='saveInputs($event, item.id)' @addCard='addCard($event, item.id)'></AddCardForm>
                     </template>
+
                 </Column>
             </template>
         </vue-horizontal-list>
@@ -30,8 +38,7 @@ import Column from './Column'
 import Task from './Task'
 import AddCardForm from './AddCardForm'
 import { mapState } from 'vuex'
-import store from '../store'
-import Vue from 'vue'
+import store from '../../store'
 import MoveCardForm from './MoveCardForm'
 import VueHorizontalList from 'vue-horizontal-list'
 
@@ -62,44 +69,43 @@ export default {
     }
   },
   async mounted () {
-    Vue.axios.defaults.baseURL = 'https://trello.backend.tests.nekidaem.ru/api/v1/'
-    const data = {
-      username: 'user',
-      password: 'user123123'
-    }
-    const response = await Vue.axios.post('users/login/', data)
-    const newToken = response.data.token
-    Vue.axios.defaults.headers.common.Authorization = 'JWT ' + newToken
-    store.dispatch('getCards')
+    store.dispatch('cards/getCards')
+    store.dispatch('cards/getCards')
   },
   methods: {
     addCard () {
       const text = arguments[0]
       const columnIndex = arguments[1]
-      this.$store.dispatch('addCard', { text, columnIndex })
+      this.$store.dispatch('cards/addCard', { text, columnIndex })
     },
     removeCard (index, cardId) {
       const payload = { columnIndex: index, cardId }
-      this.$store.dispatch('removeCard', payload)
+      this.$store.dispatch('cards/removeCard', payload)
     },
     updateColumn: function () {
       const columnId = arguments[1].id
-      this.$store.dispatch('updateColumn', { columnId })
+      this.$store.dispatch('cards/updateColumn', { columnId })
     },
     showModal (cardId) {
       this.cardToMoveId = cardId
       this.$modal.show('modal')
+      this.$store.commit('persistent/')
     },
     closeModal () {
       this.$modal.hide('modal')
+    },
+    saveInputs () {
+      const text = arguments[0].text
+      const isOpen = arguments[0].isOpen
+      const columnINdex = arguments[1]
+      this.$store.commit('persistent/setNewCardText', { index: columnINdex, text, isOpen })
     }
 
   },
-  computed: mapState(
-    [
-      'columns'
-    ]
-  )
+  computed: mapState({
+    columns: state => state.cards.columns,
+    newCardsText: state => state.persistent.newCardsText
+  })
 }
 </script>
 
@@ -118,6 +124,18 @@ export default {
 
     .kanban__modal {
         z-index: 2;
+    }
+
+    @media (max-width: 576px) {
+        .kanban__tasks--big{
+            display: none;
+        }
+    }
+
+    @media (min-width: 576px) {
+        .kanban__tasks--small{
+            display: none;
+        }
     }
 
 </style>

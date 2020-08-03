@@ -32,11 +32,7 @@ export default {
   props: {
     cardId: Number
   },
-  computed: mapState(
-    [
-      'columns'
-    ]
-  ),
+  computed: mapState({ columns: state => state.cards.columns }),
   mounted () {
     const indices = this.findCurrentColumnAndSeqNum()
     this.prevColumnIndex = indices.columnIndex
@@ -79,17 +75,26 @@ export default {
           columnIndex: newColumnIndex
         }
       }
-      this.$store.commit('moveCard', payload)
+      this.$store.commit('cards/moveCard', payload)
       const promises = []
       console.log('indices' + this.prevColumnIndex + ' ' + newColumnIndex)
       promises.push(
         this.$store.dispatch(
-          'updateColumn', { columnId: this.prevColumnIndex }))
+          'cards/updateColumn', { columnId: this.prevColumnIndex }))
       promises.push(
         this.$store.dispatch(
-          'updateColumn', { columnId: newColumnIndex }))
+          'cards/updateColumn', { columnId: newColumnIndex }))
       await Promise.all(promises)
       this.$emit('close')
+    },
+    saveState () {
+      const payload = {
+        prevColumnIndex: this.prevColumnIndex,
+        prevSeqNum: this.prevSeqNum,
+        selectedColumnName: this.selectedColumnName,
+        selectedPlace: this.selectedPlace
+      }
+      this.$store.commit('persistent/setMoveCardFormState', payload)
     }
   }
 }

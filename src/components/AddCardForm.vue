@@ -5,7 +5,7 @@
             <div> Добавить карточку</div>
         </div>
         <div v-if="open" class="add-card-form add-card-form_opened">
-            <textarea v-model="text" placeholder="Ввести заголовок для этой карточки" class="add-card-form__textarea">
+            <textarea @change="saveState" v-model="text" placeholder="Ввести заголовок для этой карточки" class="add-card-form__textarea">
             </textarea>
             <button @click="addCard" class="add-card-form__button">
                 Добавить карточку
@@ -22,6 +22,14 @@ export default {
   components: {
     PlusIcon
   },
+  props: {
+    value: {
+      type: String
+    },
+    isOpen: {
+      type: Boolean
+    }
+  },
   data () {
     return {
       open: false,
@@ -34,6 +42,7 @@ export default {
     },
     closeForm () {
       this.open = false
+      this.$emit('saveState', { text: '', isOpen: this.open })
       this.reset()
     },
     addCard () {
@@ -42,9 +51,14 @@ export default {
     },
     reset () {
       this.text = ''
+    },
+    saveState () {
+      this.$emit('saveState', { text: this.text, isOpen: this.open })
     }
   },
   mounted () {
+    this.text = this.value
+    this.open = this.isOpen
   }
 }
 
