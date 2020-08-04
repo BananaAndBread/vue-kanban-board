@@ -39,7 +39,7 @@ import Column from './Column'
 import Task from './Task'
 import AddCardForm from './AddCardForm'
 import { mapState } from 'vuex'
-import store from '../../store'
+import store from '../store'
 import MoveCardForm from './MoveCardForm'
 import VueHorizontalList from 'vue-horizontal-list'
 
